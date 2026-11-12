@@ -12,6 +12,9 @@ services:
         condition: service_healthy
       partner:
         condition: service_started
+    networks:
+      - public
+      - private
 
   db:
     image: postgres:16
@@ -30,11 +33,20 @@ services:
       timeout: 3s
       retries: 10
       start_period: 10s
+    networks:
+      - private
 
   partner:
     image: wiremock/wiremock:3.6.0
     volumes:
       - ./partner:/home/wiremock:ro
+    networks:
+      - private
 
 volumes:
   db_data:
+
+networks:
+  public:
+  private:
+    internal: true
