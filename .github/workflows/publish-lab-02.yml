@@ -48,6 +48,7 @@ jobs:
             -t lab2:${GITHUB_SHA} \
             lab-02
 
+
   publish:
     needs: [test, build]
     if: github.event_name == 'push'
@@ -63,13 +64,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase GHCR owner
+        id: owner
+        run: echo "name=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+
       - name: Build and publish
         id: push
         uses: docker/build-push-action@v6
         with:
           context: ./lab-02
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/catshop-lab-02:sha-${{ github.sha }}
+          tags: ghcr.io/${{ steps.owner.outputs.name }}/catshop-lab-02:sha-${{ github.sha }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
@@ -77,4 +82,4 @@ jobs:
       - name: Print image digest
         run: |
           echo "Digest: ${{ steps.push.outputs.digest }}"
-          echo "Image: ghcr.io/${{ github.repository_owner }}/catshop-lab-02@${{ steps.push.outputs.digest }}"
+          echo "Image: ghcr.io/${{ steps.owner.outputs.name }}/catshop-lab-02@${{ steps.push.outputs.digest }}"
