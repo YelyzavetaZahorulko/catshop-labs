@@ -1,0 +1,1 @@
+ghcr.io/yelyzavetazahorulko/catshop-lab-02@sha256:6c21d3df5afe29f865194aaad9b1f76d91605d638b182658361a9cb69f1c4dfb
